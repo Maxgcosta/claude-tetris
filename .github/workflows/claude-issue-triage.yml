@@ -1,0 +1,61 @@
+name: Claude Issue Triage
+
+on:
+  issues:
+    types: [opened, edited]
+
+concurrency:
+  group: claude-triage-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  triage:
+    # En "edited" solo corre si cambió el título o el cuerpo del issue
+    if: |
+      github.event.action == 'opened' ||
+      (github.event.action == 'edited' && (github.event.changes.title || github.event.changes.body))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Triage issue with Claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          claude_args: >-
+            --allowedTools "Read,Glob,Grep,Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh label list:*),Bash(gh search issues:*)"
+          prompt: |
+            Sos un asistente de triage de issues para este repo (Tetris en JavaScript vanilla + Canvas).
+            Issue a analizar: ${{ github.repository }}#${{ github.event.issue.number }}
+            Evento: ${{ github.event.action }}
+
+            Pasos:
+            1. Leé el issue con `gh issue view ${{ github.event.issue.number }} --comments`.
+            2. Leé `CLAUDE.md` y el código relevante (`game.js`, `index.html`, `style.css`) para entender el problema.
+            3. Listá los labels existentes con `gh label list` y asigná SOLO labels que existan:
+               - Tipo: `bug`, `enhancement`, `documentation` o `question`.
+               - Extras si aplican: `accessibility`, `good first issue`, `invalid`, y `duplicate`
+                 (solo tras buscar con `gh search issues` y confirmar que hay otro issue equivalente).
+               Aplicalos con `gh issue edit ${{ github.event.issue.number }} --add-label "..."`.
+               Si el evento es `edited`, quitá con `--remove-label` los labels que ya no correspondan.
+            4. Publicá UN SOLO comentario de diagnóstico, actualizando el anterior si existe:
+               `gh issue comment ${{ github.event.issue.number }} --edit-last --create-if-none --body "..."`
+               Escribilo en español, en Markdown, con esta estructura:
+               ## 🔍 Diagnóstico automático
+               - **Resumen** del problema
+               - **Tipo y labels asignados** (justificación breve)
+               - **Análisis / causa probable**, con referencias `archivo:línea` y nombres de funciones
+               - **Propuesta de solución** paso a paso (qué funciones/archivos tocar)
+               - **Criterios de aceptación / cómo verificar**
+               - **Información faltante** (preguntas al autor si el issue es ambiguo)
+               Cerrá con: "Para implementar la solución, comentá `@claude implementá la solución propuesta`."
+
+            Reglas: no modifiques código, no crees ramas ni PRs. Solo labels y el comentario de diagnóstico.
