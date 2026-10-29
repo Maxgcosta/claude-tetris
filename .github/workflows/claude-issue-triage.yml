@@ -48,7 +48,10 @@ jobs:
                Si el evento es `edited`, quitá con `--remove-label` los labels que ya no correspondan.
             4. Publicá UN SOLO comentario de diagnóstico, actualizando el anterior si existe:
                `gh issue comment ${{ github.event.issue.number }} --edit-last --create-if-none --body "..."`
-               Escribilo en español, en Markdown, con esta estructura:
+               Escribilo en español. El comentario DEBE estar en formato Markdown que GitHub pueda
+               interpretar (GitHub Flavored Markdown): encabezados con `##`, listas con `-`, código
+               entre backticks o bloques con ```, y saltos de línea reales (no secuencias `\n` literales).
+               Usá esta estructura:
                ## 🔍 Diagnóstico automático
                - **Resumen** del problema
                - **Tipo y labels asignados** (justificación breve)
