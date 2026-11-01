@@ -22,7 +22,7 @@ Three files, all loaded by `index.html` (`game.js` is a classic script, not a mo
 
 - `init()` resets state and starts the `requestAnimationFrame` loop; the restart button calls it again.
 - `loop(ts)` accumulates elapsed time into `dropAccum` and applies gravity when it exceeds `dropInterval`, then calls `draw()`. Pause/game over stop it via `cancelAnimationFrame(animId)`.
-- Pieces are 2D arrays of color indices into `COLORS`/`PIECES` (index 0 = empty, 1–7 = I,O,T,S,Z,J,L); the same index is stored in `board` when merged, so adding a piece means adding to both arrays and changing the `* 7` in `randomPiece()`.
+- Pieces are 2D arrays of color indices into `COLORS`/`PIECES` (index 0 = empty, 1–7 = I,O,T,S,Z,J,L, 8 = 3×3 hollow "challenge" piece); the same index is stored in `board` when merged, so adding a piece means adding to both arrays and updating the draw in `randomPiece()` (the 7 standard pieces are uniform; special pieces appear with probability `SPECIAL_CHANCE`).
 - Locking path: `lockPiece()` → `merge()` → `clearLines()` (updates score/lines/level/`dropInterval`) → `spawn()` (promotes `next`, ends the game if the new piece collides).
 - Rotation is clockwise-only with simple horizontal wall kicks (`[0,-1,1,-2,2]`), no SRS.
 - Scoring: `LINE_SCORES[cleared] * level`, plus 1/cell for soft drop and 2/cell for hard drop. Level = `floor(lines/10)+1`; `dropInterval = max(100, 1000 - (level-1)*90)` ms.
