@@ -43,6 +43,85 @@ const POWERUPS = {
   freeze:  { icon: '❄️', name: 'Congelar' },
 };
 
+// ---- Skins ----
+function rr(context, x, y, w, h, r) {
+  context.beginPath();
+  if (context.roundRect) {
+    context.roundRect(x, y, w, h, r);
+  } else { // fallback sin roundRect
+    context.moveTo(x + r, y);
+    context.arcTo(x + w, y, x + w, y + h, r);
+    context.arcTo(x + w, y + h, x, y + h, r);
+    context.arcTo(x, y + h, x, y, r);
+    context.arcTo(x, y, x + w, y, r);
+    context.closePath();
+  }
+}
+
+const SKINS = {
+  retro: {
+    colors: COLORS,
+    drawCell(context, px, py, size, color) {
+      context.fillStyle = color;
+      context.fillRect(px + 1, py + 1, size - 2, size - 2);
+      context.fillStyle = 'rgba(255,255,255,0.12)';
+      context.fillRect(px + 1, py + 1, size - 2, 4);
+    },
+  },
+  neon: {
+    colors: [null, '#00fff2', '#fff200', '#d500ff', '#39ff14', '#ff1744', '#2979ff', '#ff9100', '#ff2bd6', '#ffffff'],
+    bg: '#000000',
+    grid: '#1a1a24',
+    drawCell(context, px, py, size, color) {
+      context.save();
+      context.shadowColor = color;
+      context.shadowBlur = 12;
+      context.strokeStyle = color;
+      context.lineWidth = 2;
+      context.strokeRect(px + 2, py + 2, size - 4, size - 4);
+      context.shadowBlur = 0;
+      context.globalAlpha = Math.min(1, context.globalAlpha * 0.6);
+      context.fillStyle = color;
+      context.fillRect(px + 3, py + 3, size - 6, size - 6);
+      context.restore();
+    },
+  },
+  pastel: {
+    colors: [null, '#a8e6ef', '#fff0a8', '#d9b8f0', '#b8e6bf', '#f5b5b5', '#b5d4f5', '#fcd5a5', '#f7b6cf', '#ffe680'],
+    drawCell(context, px, py, size, color) {
+      const r = size * 0.3;
+      context.fillStyle = color;
+      rr(context, px + 1.5, py + 1.5, size - 3, size - 3, r);
+      context.fill();
+      context.fillStyle = 'rgba(255,255,255,0.45)';
+      rr(context, px + 5, py + 4, size - 10, 4, 2);
+      context.fill();
+    },
+  },
+  pixel: {
+    colors: [null, '#29b6c5', '#e0b400', '#9c4dcc', '#4caf50', '#d84343', '#3f7fd0', '#e67e22', '#d81b60', '#c9a400'],
+    drawCell(context, px, py, size, color) {
+      const u = Math.max(2, Math.round(size / 10)); // "pixel" de la textura
+      context.fillStyle = color;
+      context.fillRect(px + 1, py + 1, size - 2, size - 2);
+      context.fillStyle = 'rgba(255,255,255,0.45)'; // luz arriba-izquierda
+      context.fillRect(px + 1, py + 1, size - 2, u);
+      context.fillRect(px + 1, py + 1, u, size - 2);
+      context.fillStyle = 'rgba(0,0,0,0.35)'; // sombra abajo-derecha
+      context.fillRect(px + 1, py + size - 1 - u, size - 2, u);
+      context.fillRect(px + size - 1 - u, py + 1, u, size - 2);
+      // patrón de tablero de píxeles interior
+      context.fillStyle = 'rgba(0,0,0,0.15)';
+      const n = Math.floor((size - 2) / u);
+      for (let i = 1; i < n - 1; i++)
+        for (let j = 1; j < n - 1; j++)
+          if ((i + j) % 2 === 0) context.fillRect(px + 1 + i * u, py + 1 + j * u, u, u);
+    },
+  },
+};
+
+let currentSkin = 'retro';
+
 const canvas = document.getElementById('board');
 const ctx = canvas.getContext('2d');
 const nextCanvas = document.getElementById('next-canvas');
@@ -56,6 +135,7 @@ const overlayScore = document.getElementById('overlay-score');
 const restartBtn = document.getElementById('restart-btn');
 const themeToggle = document.getElementById('theme-toggle');
 const powerupEl = document.getElementById('powerup');
+const skinSelect = document.getElementById('skin-select');
 let gridColor = '#e3e5ee';
 
 let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
@@ -227,13 +307,11 @@ function updateHUD() {
 
 function drawBlock(context, x, y, colorIndex, size, alpha, icon) {
   if (!colorIndex) return;
-  const color = COLORS[colorIndex];
+  const skin = SKINS[currentSkin];
   context.globalAlpha = alpha ?? 1;
-  context.fillStyle = color;
-  context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2);
-  // highlight
-  context.fillStyle = 'rgba(255,255,255,0.12)';
-  context.fillRect(x * size + 1, y * size + 1, size - 2, 4);
+  skin.drawCell(context, x * size, y * size, size, skin.colors[colorIndex]);
+  context.shadowBlur = 0;
+  context.shadowColor = 'transparent';
   if (icon) {
     context.font = `${Math.floor(size * 0.6)}px sans-serif`;
     context.textAlign = 'center';
@@ -244,12 +322,22 @@ function drawBlock(context, x, y, colorIndex, size, alpha, icon) {
   context.globalAlpha = 1;
 }
 
+function clearCanvas(context, cv) {
+  const bg = SKINS[currentSkin].bg;
+  if (bg) {
+    context.fillStyle = bg;
+    context.fillRect(0, 0, cv.width, cv.height);
+  } else {
+    context.clearRect(0, 0, cv.width, cv.height);
+  }
+}
+
 function pieceIcon(piece) {
   return piece.power ? POWERUPS[piece.power].icon : undefined;
 }
 
 function drawGrid() {
-  ctx.strokeStyle = gridColor;
+  ctx.strokeStyle = SKINS[currentSkin].grid || gridColor;
   ctx.lineWidth = 0.5;
   for (let c = 1; c < COLS; c++) {
     ctx.beginPath();
@@ -266,7 +354,7 @@ function drawGrid() {
 }
 
 function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  clearCanvas(ctx, canvas);
   drawGrid();
 
   // board
@@ -289,7 +377,7 @@ function draw() {
 
 function drawNext() {
   const NB = 30;
-  nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
+  clearCanvas(nextCtx, nextCanvas);
   const shape = next.shape;
   const offX = Math.floor((4 - shape[0].length) / 2);
   const offY = Math.floor((4 - shape.length) / 2);
@@ -406,5 +494,23 @@ themeToggle.addEventListener('click', () => {
 let savedTheme = 'light';
 try { savedTheme = localStorage.getItem('theme') === 'dark' ? 'dark' : 'light'; } catch (e) {}
 applyTheme(savedTheme);
+
+function applySkin(name) {
+  if (!SKINS[name]) name = 'retro';
+  currentSkin = name;
+  skinSelect.value = name;
+  if (current) { draw(); drawNext(); }
+}
+
+skinSelect.addEventListener('keydown', e => e.stopPropagation()); // el select maneja sus propias teclas
+skinSelect.addEventListener('change', () => {
+  try { localStorage.setItem('skin', skinSelect.value); } catch (e) {}
+  applySkin(skinSelect.value);
+  skinSelect.blur(); // evita que Space reactive el selector
+});
+
+let savedSkin = 'retro';
+try { savedSkin = localStorage.getItem('skin'); } catch (e) {}
+applySkin(SKINS[savedSkin] ? savedSkin : 'retro');
 
 init();

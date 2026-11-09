@@ -88,6 +88,10 @@ Después abre `http://localhost:8000` en el navegador.
 | `Espacio` | Hard drop (caída instantánea)     |
 | `P`       | Pausar / reanudar                 |
 
+### Skins
+
+El selector **SKIN** del panel lateral cambia la apariencia al instante: Retro (plano, por defecto), Neon (fondo negro con brillo), Pastel (colores suaves y bordes redondeados) y Pixel art (textura de píxeles en cada bloque). La elección se guarda en `localStorage` y es independiente del modo claro/oscuro.
+
 ### Tema claro / oscuro
 
 El juego arranca en **modo claro**. El botón del panel lateral alterna entre claro y oscuro sin reiniciar la partida, y la elección se guarda en `localStorage`.

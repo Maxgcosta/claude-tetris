@@ -18,6 +18,7 @@
   --btn-bg: #3b5bdb;
   --btn-bg-hover: #5575f0;
   --btn-text: #ffffff;
+  --select-bg: #ffffff;
   color-scheme: light;
 }
 
@@ -41,6 +42,7 @@
   --btn-bg: #7aa2f7;
   --btn-bg-hover: #9bbdff;
   --btn-text: #0f0f17;
+  --select-bg: #1a1a25;
   color-scheme: dark;
 }
 
@@ -174,6 +176,21 @@ kbd {
 }
 
 #theme-toggle:hover {
+  border-color: var(--accent);
+}
+
+/* ---- Selector de skin ---- */
+#skin-select {
+  background: var(--select-bg);
+  color: var(--text);
+  border: 1px solid var(--board-border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+#skin-select:hover {
   border-color: var(--accent);
 }
 
