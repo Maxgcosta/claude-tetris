@@ -189,7 +189,8 @@ kbd {
   border-radius: 4px;
 }
 
-.overlay.hidden {
+.overlay.hidden,
+.pause-controls.hidden {
   display: none;
 }
 
@@ -230,4 +231,61 @@ kbd {
 
 #restart-btn:hover {
   background: var(--btn-bg-hover);
+}
+
+/* Menú de pausa */
+#pause-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: var(--accent);
+}
+
+.menu-btn {
+  min-width: 180px;
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  border-radius: 6px;
+  padding: 10px 28px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.15s;
+}
+
+.menu-btn:hover {
+  background: var(--btn-bg-hover);
+}
+
+.pause-controls {
+  list-style: none;
+  font-size: 13px;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pause-level {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.pause-level select {
+  background: var(--kbd-bg);
+  color: var(--text);
+  border: 1px solid var(--kbd-border);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 13px;
+}
+
+.pause-hint {
+  font-size: 11px;
+  color: var(--muted);
 }

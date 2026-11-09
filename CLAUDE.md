@@ -14,7 +14,7 @@ Open `index.html` directly, or serve the folder (e.g. `python3 -m http.server 80
 
 Three files, all loaded by `index.html` (`game.js` is a classic script, not a module — everything is global):
 
-- `index.html` — fixed DOM: `#board` canvas (300×600 = 10×20 cells at `BLOCK = 30`), `#next-canvas` (120×120), HUD spans (`#score`, `#lines`, `#level`), and `#overlay` (shared by pause and game over; toggled via the `hidden` class).
+- `index.html` — fixed DOM: `#board` canvas (300×600 = 10×20 cells at `BLOCK = 30`), `#next-canvas` (120×120), HUD spans (`#score`, `#lines`, `#level`), `#overlay` (game over only) and `#pause-menu` (pause menu: Reanudar/Reiniciar/Ver controles/Nivel inicial; both toggled via the `hidden` class).
 - `style.css` — layout/theme only.
 - `game.js` — all game logic, using module-level mutable state (`board`, `current`, `next`, `score`, `lines`, `level`, `paused`, `gameOver`, `dropInterval`, ...) that `init()` resets.
 
@@ -28,4 +28,5 @@ Three files, all loaded by `index.html` (`game.js` is a classic script, not a mo
 - Rotation is clockwise-only with simple horizontal wall kicks (`[0,-1,1,-2,2]`), no SRS.
 - Scoring: `LINE_SCORES[cleared] * level`, plus 1/cell for soft drop and 2/cell for hard drop. Level = `floor(lines/10)+1`; `dropInterval = max(100, 1000 - (level-1)*90)` ms.
 - Theming: colors live in CSS variables (`:root` = light default, `[data-theme="dark"]` overrides). `applyTheme()` sets `document.documentElement.dataset.theme`, reads `--grid` into `gridColor` for `drawGrid()`, and redraws; the choice persists in `localStorage` (`theme`). Add new colors as variables, not hex literals.
-- Input is a single `keydown` listener (arrows, `X` rotate, `Space` hard drop, `P` pause).
+- Input is a single `keydown` listener (arrows, `X` rotate, `Space` hard drop, `P`/`Esc` pause). While `paused`, game keys are ignored (Space/arrows are preventDefault'ed unless focus is on a button/select).
+- Starting level: `startLevel` (localStorage key `startLevel`, 1–10) is chosen in the pause menu, read by `init()` and applies to the next game; `init()` snapshots it into `gameStartLevel` and `clearLines()` uses `max(gameStartLevel, floor(lines/10)+1)`. `togglePause()` resets `dropAccum` on resume and blurs the focused menu control.
