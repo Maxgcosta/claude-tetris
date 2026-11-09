@@ -18,6 +18,7 @@
   --btn-bg: #3b5bdb;
   --btn-bg-hover: #5575f0;
   --btn-text: #ffffff;
+  --record-bg: rgba(59, 91, 219, 0.15);
   color-scheme: light;
 }
 
@@ -41,6 +42,7 @@
   --btn-bg: #7aa2f7;
   --btn-bg-hover: #9bbdff;
   --btn-text: #0f0f17;
+  --record-bg: rgba(122, 162, 247, 0.2);
   color-scheme: dark;
 }
 
@@ -230,4 +232,136 @@ kbd {
 
 #restart-btn:hover {
   background: var(--btn-bg-hover);
+}
+
+/* ---- Records ---- */
+.start-title {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: 8px;
+  color: var(--accent);
+  text-shadow: 0 0 20px var(--accent-glow);
+}
+
+.records-heading {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--label);
+  font-weight: 600;
+}
+
+.records.hidden,
+.new-record.hidden {
+  display: none;
+}
+
+.records-table {
+  border-collapse: collapse;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  color: var(--text);
+  margin: 0 auto;
+}
+
+.records-table th {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--label);
+  font-weight: 600;
+  padding: 2px 8px;
+}
+
+.records-table td {
+  padding: 3px 8px;
+  text-align: right;
+}
+
+.records-table td.name {
+  text-align: left;
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.records-table tr.current td {
+  background: var(--record-bg);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.records-empty,
+.records-stats {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+.new-record-title {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--accent);
+}
+
+.name-row,
+.btn-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+#name-input {
+  width: 130px;
+  padding: 6px 8px;
+  font-size: 14px;
+  border: 1px solid var(--board-border);
+  border-radius: 6px;
+  background: var(--board-bg);
+  color: var(--text);
+  user-select: text;
+}
+
+#name-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+#save-record-btn,
+#start-btn {
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+#save-record-btn:hover,
+#start-btn:hover {
+  background: var(--btn-bg-hover);
+}
+
+.btn-secondary {
+  margin-top: 8px;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--board-border);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+#start-btn {
+  margin-top: 8px;
+  padding: 10px 28px;
+  letter-spacing: 1px;
 }
