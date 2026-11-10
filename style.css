@@ -44,6 +44,99 @@
   color-scheme: dark;
 }
 
+/* Skins: sobrescriben el tema (deben ir después de light/dark) */
+[data-skin="neon"] {
+  --bg: #000000;
+  --text: #d8f8ff;
+  --accent: #00f0ff;
+  --accent-glow: rgba(0, 240, 255, 0.6);
+  --board-bg: #000000;
+  --board-border: #00f0ff;
+  --board-shadow: rgba(0, 240, 255, 0.35);
+  --grid: #0b1a22;
+  --label: #3fa7b5;
+  --muted: #7fc8d4;
+  --kbd-bg: #05141a;
+  --kbd-border: #00a3ad;
+  --kbd-text: #00f0ff;
+  --overlay-bg: rgba(0, 0, 0, 0.8);
+  --danger: #ff1744;
+  --btn-bg: #00f0ff;
+  --btn-bg-hover: #7dfaff;
+  --btn-text: #000000;
+  color-scheme: dark;
+}
+
+[data-skin="pastel"] {
+  --bg: #fdf6fb;
+  --text: #5a4a64;
+  --accent: #b07fd0;
+  --accent-glow: rgba(176, 127, 208, 0.3);
+  --board-bg: #fffafd;
+  --board-border: #ecd5ef;
+  --board-shadow: rgba(176, 127, 208, 0.2);
+  --grid: #f6e9f4;
+  --label: #a58bb3;
+  --muted: #8f7a9c;
+  --kbd-bg: #f3e6f6;
+  --kbd-border: #dcc3e4;
+  --kbd-text: #6c5878;
+  --overlay-bg: rgba(253, 246, 251, 0.8);
+  --danger: #e57fa0;
+  --btn-bg: #b07fd0;
+  --btn-bg-hover: #c597e0;
+  --btn-text: #ffffff;
+  color-scheme: light;
+}
+
+[data-skin="pixel"] {
+  --bg: #1b1b2f;
+  --text: #f1f1f1;
+  --accent: #ffd54f;
+  --accent-glow: rgba(255, 213, 79, 0.35);
+  --board-bg: #101020;
+  --board-border: #ffd54f;
+  --board-shadow: rgba(0, 0, 0, 0.7);
+  --grid: #1c1c33;
+  --label: #9c9cc4;
+  --muted: #b0b0d0;
+  --kbd-bg: #2a2a48;
+  --kbd-border: #4a4a78;
+  --kbd-text: #e0e0f5;
+  --overlay-bg: rgba(16, 16, 32, 0.8);
+  --danger: #ff5252;
+  --btn-bg: #ffd54f;
+  --btn-bg-hover: #ffe27f;
+  --btn-text: #1b1b2f;
+  color-scheme: dark;
+}
+
+[data-skin="pixel"] body,
+[data-skin="pixel"] #board,
+[data-skin="pixel"] #next-canvas {
+  image-rendering: pixelated;
+}
+
+[data-skin="pixel"] .value,
+[data-skin="pixel"] .game-title {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+#skin-select {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--board-border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+#skin-select option {
+  background: var(--board-bg);
+  color: var(--text);
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -230,4 +323,9 @@ kbd {
 
 #restart-btn:hover {
   background: var(--btn-bg-hover);
+}
+
+#theme-toggle:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }

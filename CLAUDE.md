@@ -28,4 +28,5 @@ Three files, all loaded by `index.html` (`game.js` is a classic script, not a mo
 - Rotation is clockwise-only with simple horizontal wall kicks (`[0,-1,1,-2,2]`), no SRS.
 - Scoring: `LINE_SCORES[cleared] * level`, plus 1/cell for soft drop and 2/cell for hard drop. Level = `floor(lines/10)+1`; `dropInterval = max(100, 1000 - (level-1)*90)` ms.
 - Theming: colors live in CSS variables (`:root` = light default, `[data-theme="dark"]` overrides). `applyTheme()` sets `document.documentElement.dataset.theme`, reads `--grid` into `gridColor` for `drawGrid()`, and redraws; the choice persists in `localStorage` (`theme`). Add new colors as variables, not hex literals.
+- Skins: `SKINS` in `game.js` (retro/neon/pastel/pixel) each define a `colors` palette (indices 1–9) and a `draw(context, px, py, size, color)` used by `drawBlock()`. `applySkin()` sets `data-skin` on `<html>` (CSS overrides the theme variables; persisted in `localStorage` `skin`) and disables the theme toggle for non-retro skins.
 - Input is a single `keydown` listener (arrows, `X` rotate, `Space` hard drop, `P` pause).
