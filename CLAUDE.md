@@ -14,7 +14,7 @@ Open `index.html` directly, or serve the folder (e.g. `python3 -m http.server 80
 
 Three files, all loaded by `index.html` (`game.js` is a classic script, not a module — everything is global):
 
-- `index.html` — fixed DOM: `#board` canvas (300×600 = 10×20 cells at `BLOCK = 30`), `#next-canvas` (120×120), HUD spans (`#score`, `#lines`, `#level`), and `#overlay` (shared by pause and game over; toggled via the `hidden` class).
+- `index.html` — fixed DOM: `#board` canvas (300×600 = 10×20 cells at `BLOCK = 30`), `#next-canvas` (120×120), HUD spans (`#score`, `#lines`, `#level`), and `#overlay` (shared by pause menu and game over; toggled via the `hidden` class; `showMenu(isPause)` shows Reanudar/Ver controles only when paused; the level selector `#level-select` sets `startLevel`, applied on the next `init()`).
 - `style.css` — layout/theme only.
 - `game.js` — all game logic, using module-level mutable state (`board`, `current`, `next`, `score`, `lines`, `level`, `paused`, `gameOver`, `dropInterval`, ...) that `init()` resets.
 
@@ -26,6 +26,6 @@ Three files, all loaded by `index.html` (`game.js` is a classic script, not a mo
 - Locking path: `lockPiece()` → `merge()` → `clearLines()` (updates score/lines/level/`dropInterval`) → `spawn()` (promotes `next`, ends the game if the new piece collides).
 - Power-ups: index 9 is a 1×1 power-up piece (`randomPowerup()`, has a `power` key into `POWERUPS`). It is never merged: `lockPiece()` calls `applyPowerup()` instead of `merge()`. `clearLines()` sets `pendingPowerup` every `POWERUP_EVERY` (10) lines, and `spawn()` makes the next piece a power-up. Freeze sets `freezeMs`, which `loop()` counts down instead of accumulating `dropAccum`.
 - Rotation is clockwise-only with simple horizontal wall kicks (`[0,-1,1,-2,2]`), no SRS.
-- Scoring: `LINE_SCORES[cleared] * level`, plus 1/cell for soft drop and 2/cell for hard drop. Level = `floor(lines/10)+1`; `dropInterval = max(100, 1000 - (level-1)*90)` ms.
+- Scoring: `LINE_SCORES[cleared] * level`, plus 1/cell for soft drop and 2/cell for hard drop. Level = `startLevel + floor(lines/10)`; `dropInterval = intervalFor(level) = max(100, 1000 - (level-1)*90)` ms.
 - Theming: colors live in CSS variables (`:root` = light default, `[data-theme="dark"]` overrides). `applyTheme()` sets `document.documentElement.dataset.theme`, reads `--grid` into `gridColor` for `drawGrid()`, and redraws; the choice persists in `localStorage` (`theme`). Add new colors as variables, not hex literals.
-- Input is a single `keydown` listener (arrows, `X` rotate, `Space` hard drop, `P` pause).
+- Input is a single `keydown` listener (arrows, `X` rotate, `Space` hard drop, `P`/`Escape` pause; game keys are ignored while paused and for `RESUME_GUARD_MS` after resuming).
