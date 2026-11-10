@@ -18,6 +18,7 @@
   --btn-bg: #3b5bdb;
   --btn-bg-hover: #5575f0;
   --btn-text: #ffffff;
+  --highlight-bg: rgba(59, 91, 219, 0.15);
   color-scheme: light;
 }
 
@@ -41,6 +42,7 @@
   --btn-bg: #7aa2f7;
   --btn-bg-hover: #9bbdff;
   --btn-text: #0f0f17;
+  --highlight-bg: rgba(122, 162, 247, 0.22);
   color-scheme: dark;
 }
 
@@ -230,4 +232,92 @@ kbd {
 
 #restart-btn:hover {
   background: var(--btn-bg-hover);
+}
+
+/* ---- Records ---- */
+.hidden {
+  display: none !important;
+}
+
+.record-form, .records-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+
+.record-form-row {
+  display: flex;
+  gap: 6px;
+}
+
+#player-name {
+  width: 120px;
+  padding: 6px 8px;
+  border: 1px solid var(--board-border);
+  border-radius: 6px;
+  background: var(--board-bg);
+  color: var(--text);
+  font-size: 13px;
+  user-select: text;
+}
+
+#save-record-btn {
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+#records-list {
+  list-style: none;
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+#records-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  color: var(--text);
+}
+
+#records-list li.empty {
+  color: var(--muted);
+  justify-content: center;
+}
+
+#records-list li.highlight {
+  background: var(--highlight-bg);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+#records-extra {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+#reset-records-btn {
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid var(--board-border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+#reset-records-btn:hover {
+  border-color: var(--danger);
 }
